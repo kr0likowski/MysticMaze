@@ -1,0 +1,84 @@
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Ll]ibrary/
+sysinfo.txt
+*.stackdump
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+.vscode/
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =========== #
+# Unity3D generated files #
+# =========== #
+/*.csproj
+/*.unityproj
+/*.sln
+/*.suo
+/*.userprefs
+/*.pidb
+/*.booproj
+/*.orig
+/*.pdb
+/*.mdb
+/*.opendb
+/*.VC.db
+
+# =========== #
+# Unity3D generated folders #
+# =========== #
+/AssetPreview/
+/Build/
+/Editor/
+/StreamingAssets/
+
+# ===================== #
+# Rider generated files #
+# ===================== #
+.idea/
+
+# ============== #
+# Custom Entries #
+# ============== #
+# Ignore specific tutorials or example projects
+Unity.2DPlatformer.Tutorials.csproj
+Unity.Platformer.Tutorials.csproj
+
+# Ignore any other temporary, build, or runtime directories/files
+*.tmp
+*.bak
+*.cache
+*.log
+*.unitypackage
+*.DS_Store
+
+# Ignore Unity generated meta files
+*.meta
+
+# Ignore crashlytics files
+crashlytics-build.properties
