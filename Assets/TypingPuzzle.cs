@@ -1,17 +1,16 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class TypingPuzzle : MonoBehaviour, IPuzzle
 {
-    public string[] words;
-    private string currentWord;
-    private string playerInput = "";
-    public TMP_Text wordDisplay;
-    public TMP_Text inputDisplay;
-    private float timeRemaining = 10f; // example time limit for the puzzle
-    public TMP_Text timerDisplay;
-    private bool isActive = false;
+    public string[] words; // List of words for the puzzle
+    private string currentWord; // Current word to be typed
+    private int currentIndex = 0; // Current index the player is typing
+    public TMP_Text wordDisplay; // TextMesh Pro component for displaying the word
+    private float timeRemaining = 10f; // Time limit for the puzzle, in seconds
+    public TMP_Text timerDisplay; // TextMesh Pro component for displaying the timer
+    private bool isActive = false; // Whether the puzzle is active
+    private string playerInput = ""; // Track all characters typed
 
     void Start()
     {
@@ -22,10 +21,10 @@ public class TypingPuzzle : MonoBehaviour, IPuzzle
     {
         // Select a random word from the list
         currentWord = words[Random.Range(0, words.Length)];
-        wordDisplay.text = currentWord;
+        currentIndex = 0;
         playerInput = "";
-        inputDisplay.text = playerInput;
-        timeRemaining = 10f; // Reset time
+        UpdateWordDisplay();
+        timeRemaining = 10f; // Reset time limit
         isActive = true;
         UpdateTimerDisplay();
         Debug.Log("Starting Typing Puzzle: " + currentWord);
@@ -45,25 +44,45 @@ public class TypingPuzzle : MonoBehaviour, IPuzzle
             UpdateTimerDisplay();
 
             // Check for player input
-            foreach (char c in Input.inputString)
+            if (Input.anyKeyDown)
             {
-                if (c == '\b') // Backspace
+                foreach (char c in Input.inputString)
                 {
-                    if (playerInput.Length > 0)
+                    if (c == '\b' && currentIndex > 0)
                     {
+                        // Handle backspace
+                        currentIndex--;
                         playerInput = playerInput.Substring(0, playerInput.Length - 1);
+                        UpdateWordDisplay();
+                    }
+                    else if (c == '\n' || c == '\r')
+                    {
+                        // Handle enter (do nothing for now)
+                    }
+                    else if (currentIndex < currentWord.Length)
+                    {
+                        if (c == currentWord[currentIndex])
+                        {
+                            playerInput += c;
+                            currentIndex++;
+                        }
+                        // Only update display after handling input
+                        UpdateWordDisplay();
+                    }
+
+                    // If player completes the word correctly
+                    if (currentIndex >= currentWord.Length && playerInput == currentWord)
+                    {
+                        isActive = false;
+                        // Call GameController's PuzzleSolved method to load the next puzzle
+                        GameController gameController = FindObjectOfType<GameController>();
+                        if (gameController != null)
+                        {
+                            gameController.PuzzleSolved();
+                        }
+                        Debug.Log("Puzzle solved: " + currentWord);
                     }
                 }
-                else if ((c == '\n') || (c == '\r')) // Enter
-                {
-                    CheckInput();
-                }
-                else
-                {
-                    playerInput += c;
-                }
-
-                inputDisplay.text = playerInput;
             }
 
             // If time runs out
@@ -76,20 +95,28 @@ public class TypingPuzzle : MonoBehaviour, IPuzzle
         }
     }
 
-    private void CheckInput()
+    private void UpdateWordDisplay()
     {
-        if (playerInput == currentWord)
+        // Update the displayed word with color highlighting
+        string displayText = "";
+
+        for (int i = 0; i < currentWord.Length; i++)
         {
-            isActive = false;
-            // Call GameController's PuzzleSolved method to load the next puzzle
-            GameController gameController = FindObjectOfType<GameController>();
-            gameController.PuzzleSolved();
-            Debug.Log("Puzzle solved: " + playerInput);
+            if (i < currentIndex)
+            {
+                displayText += "<color=green>" + currentWord[i] + "</color>";
+            }
+            else if (i == currentIndex && playerInput.Length > currentIndex && playerInput[currentIndex] != currentWord[currentIndex])
+            {
+                displayText += "<color=red>" + currentWord[i] + "</color>";
+            }
+            else
+            {
+                displayText += currentWord[i];
+            }
         }
-        else
-        {
-            Debug.Log("Incorrect input: " + playerInput);
-        }
+
+        wordDisplay.text = displayText;
     }
 
     private void UpdateTimerDisplay()
